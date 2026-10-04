@@ -1,4 +1,4 @@
-// Animated title sequence: film-leader countdown → sunburst → Chiranjeevi poster → title slam.
+// Animated title sequence: film-leader countdown → sunburst → Chiranjeevi poster → title slam. Silent.
 // Drawn live on a canvas so it stays sharp at any size. Exposes window.MegastarIntro.
 (() => {
   const DURATION = 9.4;   // seconds
@@ -22,7 +22,7 @@
 
   // Repaints the photo as a hand-painted poster: gradient-mapped tones, soft edges.
   function makePoster(img) {
-    const h = Math.min(900, img.naturalHeight);
+    const h = Math.min(900, Math.max(600, img.naturalHeight)); // small stills are upscaled before toning
     const w = Math.round(h * img.naturalWidth / img.naturalHeight);
     const c = document.createElement('canvas');
     c.width = w; c.height = h;
@@ -118,12 +118,13 @@
   function drawPoster(t, land) {
     if (!poster || t < PHOTO_AT) return;
     const k = easeOut((t - PHOTO_AT) / 0.9);
-    const h = land ? vh * 0.96 : vh * 0.6;
-    const w = (h * poster.width) / poster.height;
+    // a wide still: sized by width so it never crowds the lettering
+    const w = land ? Math.min(vw * 0.54, (vh * 0.86 * poster.width) / poster.height) : vw * 1.05;
+    const h = (w * poster.height) / poster.width;
     const zoom = 1.14 - 0.14 * k + (t - PHOTO_AT) * 0.007;
     ctx.save();
     ctx.globalAlpha = k;
-    ctx.translate(land ? vw * 0.73 : vw * 0.5, (land ? vh : vh * 0.64) + (1 - k) * vh * 0.22);
+    ctx.translate(land ? vw * 0.72 : vw * 0.5, (land ? vh * 0.5 + h * 0.52 : vh * 0.56) + (1 - k) * vh * 0.22);
     ctx.scale(zoom, zoom);
     ctx.drawImage(poster, -w / 2, -h, w, h);
     ctx.restore();
@@ -291,7 +292,7 @@
       const img = new Image();
       img.onload = () => { try { poster = makePoster(img); } catch (e) { /* draw without the photo */ } resolve(); };
       img.onerror = resolve;
-      img.src = 'images/namaste.jpg';
+      img.src = 'images/retro-80s.webp';
     });
     const timeout = new Promise(resolve => setTimeout(resolve, 2500));
     return Promise.race([Promise.all([fonts, photo]), timeout]);
@@ -322,7 +323,7 @@
     overlay = document.createElement('div');
     overlay.className = 'intro';
     overlay.innerHTML = '<canvas></canvas>'
-      + (gate ? '<button class="intro-gate" type="button"><span lang="te">ఆట మొదలు!</span><small>Tap to start the show · sound on</small></button>' : '')
+      + (gate ? '<button class="intro-gate" type="button"><span lang="te">ఆట మొదలు!</span><small>Tap to start the show</small></button>' : '')
       + '<button class="intro-skip" type="button">Skip intro</button>';
     document.body.appendChild(overlay);
     document.documentElement.classList.add('intro-on');

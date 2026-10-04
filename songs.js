@@ -21,6 +21,7 @@ window.SONGS = [
   // ───────────── The 90s ─────────────
   { title: 'Subhalekha Rasukunna', film: 'Kondaveeti Donga', year: 1990, music: 'Ilaiyaraaja', era: '90s', id: 'LNjQTA5Wqo8', alt: 'YGcoN93VgzE' },
   { title: 'Chamaku Chamaku Cham', film: 'Kondaveeti Donga', year: 1990, music: 'Ilaiyaraaja', era: '90s', id: 'mIYNz-21k60', alt: 'Ben0_rPRfgM' },
+  { title: 'Star Star Megastar', film: 'Kodama Simham', year: 1990, music: 'Raj–Koti', era: '90s', id: 'r7Q5HlaX5rE' },
   { title: 'Abbanee Teeyani Debba', film: 'Jagadeka Veerudu Athiloka Sundari', year: 1990, music: 'Ilaiyaraaja', era: '90s', id: 'zloL0fdu5aM', alt: 'Z-Xd8fMrfDk' },
   { title: 'Yamaho Nee Yama Yama', film: 'Jagadeka Veerudu Athiloka Sundari', year: 1990, music: 'Ilaiyaraaja', era: '90s', id: 'yp-Z-4tOWco', alt: 'q3GUz_RHqHM' },
   { title: 'Priyatama Nanu Palakarinchu', film: 'Jagadeka Veerudu Athiloka Sundari', year: 1990, music: 'Ilaiyaraaja', era: '90s', id: 'cPgSbfzgLrE', alt: 'HK0xFMCkwrM' },

@@ -51,15 +51,11 @@
     miniFill: $('#miniFill'),
   };
 
-  // Opening music for the intro: 0:15 – 0:50 of the track, streamed like every other song.
-  const THEME = { title: 'Star Star', film: 'Kodama Simham', year: 1990, music: 'Raj–Koti', era: '90s', id: 'r7Q5HlaX5rE', start: 15, end: 50 };
-
   const pad = n => String(n).padStart(2, '0');
   const fmt = s => (isFinite(s) && s > 0 ? `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}` : '0:00');
   const clamp = (n, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
   const thumb = (id, size = 'mqdefault') => `url('https://i.ytimg.com/vi/${id}/${size}.jpg')`;
-  // `override` is a one-off track (the opening theme) played ahead of the queue
-  const current = () => state.override || state.queue[state.pos];
+  const current = () => state.queue[state.pos];
 
   function shuffled(list) {
     const a = list.slice();
@@ -127,13 +123,9 @@
         stack.appendChild(still);
       }
     }
-    // Optional own still for the 80s panel: used only if images/retro-80s.jpg exists.
-    const own = new Image();
-    own.onload = () => {
-      const top = $('[data-stack="80s"] span:last-child');
-      if (top) top.style.backgroundImage = "url('images/retro-80s.jpg')";
-    };
-    own.src = 'images/retro-80s.jpg';
+    // The 80s panel leads with our own still
+    const top = $('[data-stack="80s"] span:last-child');
+    if (top) top.style.backgroundImage = "url('images/retro-80s.webp')";
   }
 
   function updateInfo() {
@@ -144,7 +136,7 @@
     els.film.textContent = song.film;
     els.year.textContent = song.year;
     els.music.textContent = song.music;
-    els.no.textContent = song === THEME ? 'Opening theme' : `No. ${pad(SONGS.indexOf(song) + 1)}`;
+    els.no.textContent = `No. ${pad(SONGS.indexOf(song) + 1)}`;
     els.vinylLabel.style.backgroundImage = thumb(song.id);
     els.vinylTitle.textContent = song.title;
     els.vinylFilm.textContent = filmLine;
@@ -184,19 +176,8 @@
     state.altTried = false;
     updateInfo();
     if (!state.ready) return;
-    const video = song.start != null ? { videoId: song.id, startSeconds: song.start, endSeconds: song.end } : song.id;
-    if (autoplay) state.player.loadVideoById(video);
-    else state.player.cueVideoById(video);
-  }
-
-  function playTheme() {
-    const run = () => {
-      state.override = THEME;
-      raiseCurtain();
-      load(true);
-    };
-    if (state.ready) run();
-    else readyQueue.push(run);
+    if (autoplay) state.player.loadVideoById(song.id);
+    else state.player.cueVideoById(song.id);
   }
 
   function raiseCurtain() {
@@ -244,11 +225,6 @@
 
   function step(dir) {
     if (!state.queue.length) return;
-    if (state.override) { // the theme hands over to the first song in the queue
-      state.override = null;
-      load(state.started);
-      return;
-    }
     state.pos = (state.pos + dir + state.queue.length) % state.queue.length;
     // a fresh shuffle each time the reel runs out
     if (dir > 0 && state.pos === 0 && state.shuffle) buildQueue();
@@ -262,7 +238,6 @@
   }
 
   function playSong(song) {
-    state.override = null;
     if (state.era !== 'all' && song.era !== state.era) setEra('all', true);
     buildQueue(song);
     if (state.ready && !state.started) raiseCurtain();
@@ -464,36 +439,36 @@
     return audioCtx;
   }
 
-  function noiseBuffer(ac) {
-    const buf = ac.createBuffer(1, ac.sampleRate * 0.3, ac.sampleRate);
+  function noiseBuffer(ac, seconds = 0.3) {
+    const buf = ac.createBuffer(1, Math.round(ac.sampleRate * seconds), ac.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     return buf;
   }
 
   // A low drum hit: sine dropping in pitch
-  function thump(ac, at, level, from = 170, to = 50) {
+  function thump(ac, at, level, from = 170, to = 50, dest = ac.destination) {
     const osc = ac.createOscillator();
     const gain = ac.createGain();
     osc.frequency.setValueAtTime(from, at);
     osc.frequency.exponentialRampToValueAtTime(to, at + 0.14);
     gain.gain.setValueAtTime(level, at);
     gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
-    osc.connect(gain).connect(ac.destination);
+    osc.connect(gain).connect(dest);
     osc.start(at); osc.stop(at + 0.24);
   }
 
   // A sharp stick slap: a burst of filtered noise
-  function slap(ac, noise, at, level, freq = 1900) {
+  function slap(ac, noise, at, level, freq = 1900, dest = ac.destination, decay = 0.07) {
     const src = ac.createBufferSource();
     const filter = ac.createBiquadFilter();
     const gain = ac.createGain();
     src.buffer = noise;
     filter.type = 'bandpass'; filter.frequency.value = freq; filter.Q.value = 1.2;
     gain.gain.setValueAtTime(level, at);
-    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.07);
-    src.connect(filter).connect(gain).connect(ac.destination);
-    src.start(at); src.stop(at + 0.09);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + decay);
+    src.connect(filter).connect(gain).connect(dest);
+    src.start(at); src.stop(at + decay + 0.02);
   }
 
   function dialogue() {
@@ -681,7 +656,6 @@
   if (location.protocol === 'file:') {
     els.startNote.textContent = 'Tip: YouTube needs a web address to play. Run start.bat and open http://localhost:8000.';
   }
-  addEventListener('megastar:intro-start', playTheme);
   Promise.resolve(window.MegastarIntro && window.MegastarIntro.finished).then(autoStart);
 
   const api = document.createElement('script');

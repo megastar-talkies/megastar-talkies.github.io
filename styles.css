@@ -128,7 +128,7 @@ h1 { margin-top: 12px; }
 h1 .te {
   display: block;
   font-family: var(--telugu); font-weight: 400;
-  font-size: clamp(56px, 10.5vw, 168px);
+  font-size: clamp(56px, 8vw, 132px);
   line-height: 1.22;
   color: var(--mustard);
   text-shadow: 3px 3px 0 var(--red), 7px 7px 0 var(--ink);
@@ -629,3 +629,28 @@ html.is-teenmaar .fan, html.is-teenmaar .marquee-frame, html.is-teenmaar .mini-t
 .intro-gate [lang='te'] { font-family: var(--telugu); font-size: clamp(30px, 5vw, 46px); line-height: 1.3; }
 .intro-gate small { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
 @keyframes gate-pulse { 50% { box-shadow: 6px 6px 0 var(--ink), 0 0 0 10px rgba(215, 38, 30, .28); } }
+
+/* the Aaradhana still is the hero picture: a big lobby card, print dots over it */
+.hero-still {
+  position: absolute; z-index: 1;
+  right: 4.5vw; top: 50%;
+  width: min(45vw, 660px);
+  padding: 14px 14px 0;
+  background: var(--cream); color: var(--ink);
+  border: 3px solid #000;
+  box-shadow: 14px 14px 0 var(--red), 0 30px 70px rgba(0, 0, 0, .55);
+  transform: translateY(calc(-46% + var(--p) * -90px)) rotate(3deg) scale(calc(1 + var(--p) * .06));
+  opacity: calc(1 - var(--p) * 1.3);
+}
+.hero-still img { width: 100%; filter: sepia(.25) saturate(1.2) contrast(1.08); }
+.hero-still::after { /* halftone, so the old print reads as print */
+  content: ''; position: absolute; inset: 14px 14px 40px;
+  background: radial-gradient(rgba(27, 10, 9, .34) 1px, transparent 1.5px) 0 0 / 5px 5px;
+  mix-blend-mode: multiply; pointer-events: none;
+}
+.hero-still figcaption { padding: 9px 2px 10px; font-weight: 700; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; opacity: 1; text-align: center; }
+@media (max-width: 860px) {
+  .hero-still { right: auto; left: 50%; top: calc(var(--nav-h) + 22px); width: 66vw; max-width: 330px; padding: 8px 8px 0; transform: translate(-50%, calc(var(--p) * -60px)) rotate(2.5deg); box-shadow: 8px 8px 0 var(--red); }
+  .hero-still::after { inset: 8px 8px 34px; }
+  .hero-still figcaption { font-size: 11px; padding: 6px 2px 7px; }
+}
