@@ -17,6 +17,7 @@
   const smooth = (a, b, x) => { const k = clamp((x - a) / (b - a)); return k * k * (3 - 2 * k); };
 
   let overlay, canvas, ctx, poster, raf = 0, t0 = 0, done = null;
+  let gateOpen = false; // assets loaded, animation not yet rolling
   let vw = 0, vh = 0, dpr = 1;
 
   // Repaints the photo as a hand-painted poster: gradient-mapped tones, soft edges.
@@ -260,6 +261,7 @@
 
   function finish() {
     if (!overlay) return;
+    gateOpen = false;
     cancelAnimationFrame(raf);
     removeEventListener('resize', resize);
     document.removeEventListener('keydown', onKey);
@@ -273,7 +275,8 @@
   }
 
   function onKey(e) {
-    if (e.key === 'Escape' || e.key === 'Enter') finish();
+    if (e.key === 'Escape') finish();
+    else if (e.key === 'Enter' && !gateOpen) finish(); // at the gate, Enter presses the start button
   }
 
   function loadAssets() {
@@ -294,11 +297,33 @@
     return Promise.race([Promise.all([fonts, photo]), timeout]);
   }
 
-  function play() {
+  // Starts the animation and tells the page, so the opening music can start in step.
+  function begin() {
+    if (!overlay || !gateOpen) return;
+    gateOpen = false;
+    cancelAnimationFrame(raf);
+    const gate = overlay.querySelector('.intro-gate');
+    if (gate) gate.remove();
+    window.dispatchEvent(new Event('megastar:intro-start'));
+    t0 = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  // Waiting at the gate: the leader's first frame flickers until someone starts the show.
+  function idle() {
+    draw(0.01);
+    raf = requestAnimationFrame(idle);
+  }
+
+  // gate: wait for a tap before rolling. Browsers only allow sound after the visitor
+  // interacts, so the automatic first run asks for one.
+  function play({ gate = false } = {}) {
     if (overlay) finish();
     overlay = document.createElement('div');
     overlay.className = 'intro';
-    overlay.innerHTML = '<canvas></canvas><button class="intro-skip" type="button">Skip intro</button>';
+    overlay.innerHTML = '<canvas></canvas>'
+      + (gate ? '<button class="intro-gate" type="button"><span lang="te">ఆట మొదలు!</span><small>Tap to start the show · sound on</small></button>' : '')
+      + '<button class="intro-skip" type="button">Skip intro</button>';
     document.body.appendChild(overlay);
     document.documentElement.classList.add('intro-on');
     canvas = overlay.querySelector('canvas');
@@ -313,8 +338,13 @@
       done = resolve;
       loadAssets().then(() => {
         if (overlay !== mine) return; // skipped while loading
-        t0 = performance.now();
-        raf = requestAnimationFrame(frame);
+        gateOpen = true;
+        const gateBtn = overlay.querySelector('.intro-gate');
+        if (!gateBtn) return begin();
+        gateBtn.classList.add('is-ready');
+        gateBtn.addEventListener('click', begin);
+        gateBtn.focus();
+        raf = requestAnimationFrame(idle);
       });
     });
     return api.finished;
@@ -327,5 +357,5 @@
   // Plays once per browser session; never for people who ask for reduced motion.
   let seen = false;
   try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* private browsing */ }
-  if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+  if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) play({ gate: true });
 })();

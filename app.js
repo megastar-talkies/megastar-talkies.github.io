@@ -51,11 +51,15 @@
     miniFill: $('#miniFill'),
   };
 
+  // Opening music for the intro: 0:15 – 0:50 of the track, streamed like every other song.
+  const THEME = { title: 'Star Star', film: 'Kodama Simham', year: 1990, music: 'Raj–Koti', era: '90s', id: 'r7Q5HlaX5rE', start: 15, end: 50 };
+
   const pad = n => String(n).padStart(2, '0');
   const fmt = s => (isFinite(s) && s > 0 ? `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}` : '0:00');
   const clamp = (n, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
   const thumb = (id, size = 'mqdefault') => `url('https://i.ytimg.com/vi/${id}/${size}.jpg')`;
-  const current = () => state.queue[state.pos];
+  // `override` is a one-off track (the opening theme) played ahead of the queue
+  const current = () => state.override || state.queue[state.pos];
 
   function shuffled(list) {
     const a = list.slice();
@@ -140,7 +144,7 @@
     els.film.textContent = song.film;
     els.year.textContent = song.year;
     els.music.textContent = song.music;
-    els.no.textContent = `No. ${pad(SONGS.indexOf(song) + 1)}`;
+    els.no.textContent = song === THEME ? 'Opening theme' : `No. ${pad(SONGS.indexOf(song) + 1)}`;
     els.vinylLabel.style.backgroundImage = thumb(song.id);
     els.vinylTitle.textContent = song.title;
     els.vinylFilm.textContent = filmLine;
@@ -180,8 +184,19 @@
     state.altTried = false;
     updateInfo();
     if (!state.ready) return;
-    if (autoplay) state.player.loadVideoById(song.id);
-    else state.player.cueVideoById(song.id);
+    const video = song.start != null ? { videoId: song.id, startSeconds: song.start, endSeconds: song.end } : song.id;
+    if (autoplay) state.player.loadVideoById(video);
+    else state.player.cueVideoById(video);
+  }
+
+  function playTheme() {
+    const run = () => {
+      state.override = THEME;
+      raiseCurtain();
+      load(true);
+    };
+    if (state.ready) run();
+    else readyQueue.push(run);
   }
 
   function raiseCurtain() {
@@ -229,6 +244,11 @@
 
   function step(dir) {
     if (!state.queue.length) return;
+    if (state.override) { // the theme hands over to the first song in the queue
+      state.override = null;
+      load(state.started);
+      return;
+    }
     state.pos = (state.pos + dir + state.queue.length) % state.queue.length;
     // a fresh shuffle each time the reel runs out
     if (dir > 0 && state.pos === 0 && state.shuffle) buildQueue();
@@ -242,6 +262,7 @@
   }
 
   function playSong(song) {
+    state.override = null;
     if (state.era !== 'all' && song.era !== state.era) setEra('all', true);
     buildQueue(song);
     if (state.ready && !state.started) raiseCurtain();
@@ -660,6 +681,7 @@
   if (location.protocol === 'file:') {
     els.startNote.textContent = 'Tip: YouTube needs a web address to play. Run start.bat and open http://localhost:8000.';
   }
+  addEventListener('megastar:intro-start', playTheme);
   Promise.resolve(window.MegastarIntro && window.MegastarIntro.finished).then(autoStart);
 
   const api = document.createElement('script');

@@ -612,3 +612,20 @@ html.is-teenmaar .fan, html.is-teenmaar .marquee-frame, html.is-teenmaar .mini-t
 @media (prefers-reduced-motion: reduce) {
   .punch-card, html.is-teenmaar .fan, html.is-teenmaar .marquee-frame, html.is-teenmaar .mini-thumb { animation: none; }
 }
+
+/* tap-to-start gate shown before the intro rolls */
+.intro-gate {
+  position: absolute; left: 50%; bottom: 12%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 14px 44px 14px;
+  border: 3px solid var(--ink); border-radius: 18px;
+  background: var(--mustard); color: var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  opacity: 0; transition: opacity .4s;
+}
+.intro-gate.is-ready { opacity: 1; animation: gate-pulse 1.6s ease-in-out infinite; }
+.intro-gate:hover { background: #ffc94d; }
+.intro-gate [lang='te'] { font-family: var(--telugu); font-size: clamp(30px, 5vw, 46px); line-height: 1.3; }
+.intro-gate small { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+@keyframes gate-pulse { 50% { box-shadow: 6px 6px 0 var(--ink), 0 0 0 10px rgba(215, 38, 30, .28); } }
