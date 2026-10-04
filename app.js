@@ -297,6 +297,7 @@
 
   window.onYouTubeIframeAPIReady = () => {
     state.player = new YT.Player('player', {
+      host: 'https://www.youtube-nocookie.com', // YouTube's privacy-enhanced player
       width: '100%',
       height: '100%',
       videoId: current().id,
