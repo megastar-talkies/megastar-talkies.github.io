@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Megastar Talkies | Chiranjeevi Retro Radio — 80s, 90s &amp; All-Time Hits</title>
+  <meta name="description" content="A fan-made retro talkies for Megastar Chiranjeevi — 80s and 90s Telugu hits and all-time chartbusters playing back to back, with whistles included.">
+  <meta name="theme-color" content="#1b0a09">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%235c0f14'/%3E%3Cpath d='M32 9l6.6 15.2 16.4 1.5-12.4 10.9 3.7 16.1L32 44.2 17.7 52.7l3.7-16.1L9 25.7l16.4-1.5z' fill='%23f2b632'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Telugu:wght@400;500;600;700&family=Ramabhadra&family=Shrikhand&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-mode="audio">
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <nav class="nav" aria-label="Sections">
+    <a class="nav-brand" href="#top" lang="te">మెగాస్టార్ టాకీస్</a>
+    <div class="nav-links">
+      <a href="#theatre">Play</a>
+      <a href="#fanzone">Fan zone</a>
+      <a href="#eras">Eras</a>
+      <a href="#milestones">Milestones</a>
+      <a href="#jukebox">Jukebox</a>
+    </div>
+    <div class="mode" role="group" aria-label="Playback mode">
+      <button type="button" data-mode-set="video" aria-pressed="false">Video</button>
+      <button type="button" data-mode-set="audio" aria-pressed="true">Audio</button>
+    </div>
+  </nav>
+
+  <!-- 1 · Hero: pinned while the title recedes -->
+  <header class="hero-wrap" id="top" data-scene="pin">
+    <div class="hero">
+      <div class="hero-rays" aria-hidden="true"></div>
+      <img class="hero-photo" src="images/namaste.jpg" alt="Chiranjeevi greeting the audience with folded hands at the ANR Awards, 2024" width="960" height="1301">
+      <div class="hero-copy">
+        <p class="eyebrow">A fan tribute · in theatres since 1978</p>
+        <h1>
+          <span class="te" lang="te">మెగాస్టార్ టాకీస్</span>
+          <span class="en">Megastar Talkies</span>
+        </h1>
+        <p class="tagline">Chiranjeevi retro radio — the 80s, the 90s and every hit that made the theatre shake.</p>
+        <div class="hero-cta">
+          <button class="cta" id="heroPlay" type="button">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <span lang="te">ఆట మొదలు</span> · Start the show
+          </button>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">Scroll<span></span></div>
+    </div>
+  </header>
+
+  <!-- 2 · Statement: words light up as you scroll -->
+  <section class="statement-wrap" data-scene="pin" aria-label="Chiranjeevi by the numbers">
+    <div class="statement">
+      <p id="statementText">One man. <b>156 films.</b> <b>537 songs.</b> <b>24,000 dance moves.</b> Four decades of whistles, paper showers and house-full boards.</p>
+      <small>Film, song and dance-move counts as recognised by Guinness World Records, 2024.</small>
+    </div>
+  </section>
+
+  <!-- 3 · The screen -->
+  <section class="theatre-wrap" id="theatre" data-scene="enter" aria-label="Chiranjeevi retro radio player">
+    <div class="theatre">
+      <div class="now-showing" aria-hidden="true">Now Showing</div>
+      <div class="marquee-frame">
+        <div class="screen">
+          <div id="player"></div>
+
+          <!-- audio mode: a record spins over the picture -->
+          <button class="vinyl-cover" id="vinylCover" type="button" aria-label="Play or pause">
+            <span class="vinyl"><span class="vinyl-label" id="vinylLabel"></span></span>
+            <span class="vinyl-side">
+              <span class="vinyl-tag">Audio mode · radio on</span>
+              <span class="vinyl-title" id="vinylTitle"></span>
+              <span class="vinyl-film" id="vinylFilm"></span>
+              <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </span>
+          </button>
+
+          <button class="curtain" id="startBtn" type="button">
+            <span class="curtain-play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="38" height="38"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            </span>
+            <span class="curtain-te" lang="te">ఆట మొదలు!</span>
+            <span class="curtain-en">Start the show</span>
+            <span class="curtain-note" id="startNote"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ticket">
+        <div class="ticket-info">
+          <p class="ticket-label">Now playing · <span id="songNo">No. 01</span></p>
+          <h2 id="songTitle">Loading the reels…</h2>
+          <p class="ticket-meta"><span id="songFilm">—</span> <b id="songYear"></b></p>
+          <p class="ticket-music">Music: <span id="songMusic">—</span></p>
+
+          <div class="progress" id="progress" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="times"><span id="timeNow">0:00</span><span id="timeTotal">0:00</span></div>
+        </div>
+
+        <div class="ticket-controls">
+          <div class="transport">
+            <button class="btn" type="button" data-act="prev" aria-label="Previous song">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="currentColor"/></svg>
+            </button>
+            <button class="btn btn-play" type="button" data-act="toggle" aria-label="Play">
+              <svg class="i-play" viewBox="0 0 24 24" width="30" height="30"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" width="30" height="30"><path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="currentColor"/></svg>
+            </button>
+            <button class="btn" type="button" data-act="next" aria-label="Next song">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z" fill="currentColor"/></svg>
+            </button>
+          </div>
+          <div class="mode mode-ticket" role="group" aria-label="Playback mode">
+            <button type="button" data-mode-set="video" aria-pressed="false">Video</button>
+            <button type="button" data-mode-set="audio" aria-pressed="true">Audio only</button>
+          </div>
+          <div class="extras">
+            <button class="chip toggle" id="shuffleBtn" type="button" aria-pressed="true">Shuffle</button>
+            <button class="chip whistle" type="button" data-act="whistle"><span lang="te">ఈల వేయండి</span> · Whistle</button>
+          </div>
+        </div>
+
+        <div class="eras-row" role="group" aria-label="Choose an era">
+          <span class="eras-label">Tune the era</span>
+          <button class="chip era is-on" type="button" data-era="all">All hits</button>
+          <button class="chip era" type="button" data-era="80s">80s</button>
+          <button class="chip era" type="button" data-era="90s">90s</button>
+          <button class="chip era" type="button" data-era="00s">2000s +</button>
+        </div>
+      </div>
+      <p class="player-msg" id="playerMsg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Fan zone: what the front benches do -->
+  <section class="fanzone" id="fanzone" aria-label="Fan zone">
+    <p class="eyebrow dark">First day · first show</p>
+    <h2 class="big"><span lang="te">ఫ్యాన్స్ హంగామా</span></h2>
+    <p class="fanzone-lead">Do what the front benches do. These work while the music plays.</p>
+    <div class="fan-buttons">
+      <button class="fan" type="button" data-act="whistle"><span class="fan-ico" aria-hidden="true">😙</span><b lang="te">ఈల</b><small>Whistle · W</small></button>
+      <button class="fan" type="button" data-act="dialogue"><span class="fan-ico" aria-hidden="true">💥</span><b lang="te">డైలాగ్</b><small>Punch dialogue · D</small></button>
+      <button class="fan" type="button" data-act="teenmaar"><span class="fan-ico" aria-hidden="true">🥁</span><b lang="te">తీన్‌మార్</b><small>Drum beat · T</small></button>
+      <button class="fan" type="button" data-act="flowers"><span class="fan-ico" aria-hidden="true">🌼</span><b lang="te">పూల వర్షం</b><small>Flower shower · F</small></button>
+    </div>
+  </section>
+
+  <!-- 4 · Eras: sideways reel driven by vertical scroll -->  <section class="eras-wrap" id="eras" data-scene="pin" aria-label="Three eras of hits">
+    <div class="eras-pin">
+      <div class="eras-track">
+        <article class="era-panel era-80" data-era-panel="80s">
+          <div class="era-num" aria-hidden="true">80s</div>
+          <div class="era-copy">
+            <p class="eyebrow">Reel one · 1978 – 1989</p>
+            <h2>The rise of the Supreme Hero</h2>
+            <p>Khaidi lights the fuse. Ilaiyaraaja's melodies, Chakravarthy's beats, and a hero who fights and dances like nobody the Telugu screen had seen.</p>
+            <button class="cta small" type="button" data-play-era="80s">Play the 80s</button>
+          </div>
+          <div class="era-stack" data-stack="80s" aria-hidden="true"></div>
+        </article>
+        <article class="era-panel era-90" data-era-panel="90s">
+          <div class="era-num" aria-hidden="true">90s</div>
+          <div class="era-copy">
+            <p class="eyebrow">Reel two · 1990 – 1999</p>
+            <h2>Megastar mania</h2>
+            <p>Jagadeka Veerudu, Gang Leader, Gharana Mogudu. Bappi Lahiri's disco, Keeravani's mass numbers, and ticket queues that went around the block.</p>
+            <button class="cta small" type="button" data-play-era="90s">Play the 90s</button>
+          </div>
+          <div class="era-stack" data-stack="90s" aria-hidden="true"></div>
+        </article>
+        <article class="era-panel era-00" data-era-panel="00s">
+          <div class="era-num" aria-hidden="true">2000+</div>
+          <div class="era-copy">
+            <p class="eyebrow">Reel three · 2000 onwards</p>
+            <h2>Boss is back</h2>
+            <p>Indra's veena step, Tagore, Shankar Dada — then a ten-year interval, and a comeback in Khaidi No. 150 that proved the whistles never stopped.</p>
+            <button class="cta small" type="button" data-play-era="00s">Play 2000s +</button>
+          </div>
+          <div class="era-stack" data-stack="00s" aria-hidden="true"></div>
+        </article>
+      </div>
+      <div class="era-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <!-- 5 · Milestones: portrait stays put while the years roll by -->
+  <section class="milestones" id="milestones">
+    <div class="milestones-inner">
+      <aside class="portrait">
+        <figure>
+          <img src="images/portrait.jpg" alt="Chiranjeevi in a cream shirt, leaning against a wall" width="1280" height="1920" loading="lazy">
+          <figcaption>Photo: Rudhra Varma · CC BY-SA 4.0</figcaption>
+        </figure>
+      </aside>
+      <div class="timeline">
+        <p class="eyebrow">Four decades, one Boss</p>
+        <h2 class="big">Mega Milestones</h2>
+        <ol>
+          <li class="reveal"><span class="yr">1978</span><div><h3>Pranam Khareedu</h3><p>The first release. A young Konidela Siva Sankara Vara Prasad from Mogalthur walks on to the screen as Chiranjeevi.</p></div></li>
+          <li class="reveal"><span class="yr">1983</span><div><h3 lang="te">ఖైదీ</h3><p><b>Khaidi</b> — A. Kodandarami Reddy's action drama turns a promising actor into the star of the masses.</p></div></li>
+          <li class="reveal"><span class="yr">1987</span><div><h3 lang="te">స్వయంకృషి</h3><p><b>Swayamkrushi</b> — K. Viswanath's cobbler-to-businessman story brings the Nandi Award for Best Actor.</p></div></li>
+          <li class="reveal"><span class="yr">1988</span><div><h3 lang="te">రుద్రవీణ</h3><p><b>Rudraveena</b> — K. Balachander directs, Ilaiyaraaja scores, and it wins the Nargis Dutt Award for national integration.</p></div></li>
+          <li class="reveal"><span class="yr">1990</span><div><h3 lang="te">జగదేకవీరుడు అతిలోకసుందరి</h3><p><b>Jagadeka Veerudu Athiloka Sundari</b> — Chiranjeevi and Sridevi in K. Raghavendra Rao's fantasy that every generation rewatches.</p></div></li>
+          <li class="reveal"><span class="yr">1991</span><div><h3 lang="te">గ్యాంగ్ లీడర్</h3><p><b>Gang Leader</b> — Bappi Lahiri's beats, Vijayashanti alongside, and a title song still played at every college fest.</p></div></li>
+          <li class="reveal"><span class="yr">1992</span><div><h3 lang="te">ఘరానా మొగుడు</h3><p><b>Gharana Mogudu</b> — widely cited as the first Telugu film to cross ₹10 crore in distributor share.</p></div></li>
+          <li class="reveal"><span class="yr">2002</span><div><h3 lang="te">ఇంద్ర</h3><p><b>Indra</b> — B. Gopal's faction drama, the veena step, and box-office records across the state.</p></div></li>
+          <li class="reveal"><span class="yr">2013</span><div><h3>Cannes red carpet</h3><p>Walks the red carpet at the Cannes Film Festival, representing India as its tourism minister.</p>
+            <figure><img src="images/cannes.jpg" alt="Chiranjeevi with the Indian delegation on the red carpet at Cannes, 2013" width="700" height="486" loading="lazy"><figcaption>Photo: Ministry of Tourism, Govt. of India · GODL-India</figcaption></figure></div></li>
+          <li class="reveal"><span class="yr">2024</span><div><h3>Padma Vibhushan</h3><p>India's second-highest civilian honour, presented by President Droupadi Murmu — and, the same year, a Guinness World Record as Indian cinema's most prolific dancing star.</p>
+            <figure><img src="images/padma.jpg" alt="President Droupadi Murmu presenting the Padma Vibhushan to Chiranjeevi, 2024" width="1280" height="1320" loading="lazy"><figcaption>Photo: Press Information Bureau · CC BY 4.0</figcaption></figure></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Jukebox -->
+  <section class="jukebox" id="jukebox">
+    <div class="section-head">
+      <p class="eyebrow dark"><span lang="te">పాటల పెట్టె</span></p>
+      <h2 class="big">The Jukebox</h2>
+      <p>Pick any reel and it goes straight on the screen. The radio carries on from there.</p>
+    </div>
+    <div id="jukeboxList"></div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="reveal">
+        <h3>What is this?</h3>
+        <p>A fan-made retro radio for Megastar Chiranjeevi. Press play once and the songs run back to back, shuffled like a request show on a Sunday afternoon.</p>
+      </div>
+      <div class="reveal">
+        <h3>Video or audio?</h3>
+        <p>Video mode puts the song on the big screen. Audio mode drops a record over the picture and keeps the music going while you scroll — the player bar follows you down the page.</p>
+      </div>
+      <div class="reveal">
+        <h3>Shortcuts</h3>
+        <p><kbd>Space</kbd> play or pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>A</kbd> audio/video · <kbd>W</kbd> whistle · <kbd>D</kbd> dialogue · <kbd>T</kbd> teenmaar · <kbd>F</kbd> flowers.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="te" lang="te">జై చిరంజీవ</p>
+    <p><button class="replay" id="replayIntro" type="button">Replay the intro</button></p>
+    <p>Megastar Talkies is an unofficial fan tribute. It is not affiliated with Chiranjeevi, any production house or any music label. Songs stream from their public uploads on YouTube and belong to their respective owners.</p>
+    <p class="credits">Photographs from Wikimedia Commons, used under their free licences:
+      <a href="https://commons.wikimedia.org/?curid=164184056">ANR Awards 2024</a> by Bollywood Hungama (<a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>, cropped and toned) ·
+      <a href="https://commons.wikimedia.org/?curid=193781124">portrait</a> by Rudhra Varma (<a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>) ·
+      <a href="https://commons.wikimedia.org/?curid=71879995">Cannes 2013</a> by the Ministry of Tourism, Government of India (<a href="https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf">GODL-India</a>) ·
+      <a href="https://commons.wikimedia.org/?curid=195859029">Padma Vibhushan 2024</a> via the Press Information Bureau (<a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>).
+    </p>
+  </footer>
+
+  <!-- Follows you down the page once the screen scrolls away -->
+  <div class="mini" id="mini" aria-label="Mini player">
+    <div class="mini-thumb" id="miniThumb" aria-hidden="true"></div>
+    <a class="mini-info" href="#theatre">
+      <strong id="miniTitle">Megastar Talkies</strong>
+      <span id="miniFilm">Press play</span>
+    </a>
+    <div class="mini-controls">
+      <button class="btn sm" type="button" data-act="prev" aria-label="Previous song">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="currentColor"/></svg>
+      </button>
+      <button class="btn sm btn-play" type="button" data-act="toggle" aria-label="Play">
+        <svg class="i-play" viewBox="0 0 24 24" width="22" height="22"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" width="22" height="22"><path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="currentColor"/></svg>
+      </button>
+      <button class="btn sm" type="button" data-act="next" aria-label="Next song">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z" fill="currentColor"/></svg>
+      </button>
+      <button class="btn sm mini-whistle" type="button" data-act="whistle" aria-label="Whistle">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l2.4 5.6 6.1.6-4.6 4 1.4 6-5.3-3.2L6.7 18.2l1.4-6-4.6-4 6.1-.6z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="mini-progress"><i id="miniFill"></i></div>
+  </div>
+
+  <!-- Punch dialogue card -->
+  <button class="punch" id="punch" type="button" aria-live="polite">
+    <span class="punch-card">
+      <span class="punch-te" lang="te"></span>
+      <span class="punch-en"></span>
+      <span class="punch-film"></span>
+    </span>
+  </button>
+
+  <script src="intro.js"></script>
+  <script src="songs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
