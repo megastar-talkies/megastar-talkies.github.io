@@ -86,7 +86,7 @@
   function renderJukebox() {
     els.list.innerHTML = '';
     const groups = [
-      { title: 'Remastered', note: 'Clean audio, no ads · on the radio by default', songs: SONGS.filter(isRemastered) },
+      { title: 'Remastered', note: 'Clean audio, far fewer ads · on the radio by default', songs: SONGS.filter(isRemastered) },
       ...ERAS.map(era => ({ ...era, songs: SONGS.filter(s => s.era === era.key && !isRemastered(s)) })),
     ];
     for (const era of groups) {
