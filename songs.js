@@ -1,6 +1,39 @@
 // Song catalogue. `id` is the YouTube video played; `alt` is tried if `id` refuses to embed.
 // era: '80s' | '90s' | '00s' (2000 onwards)
+// set: 'remastered' marks the audio-only uploads from the Telugu Remastered playlist, which the
+// radio plays by default.
 window.SONGS = [
+  // ───────────── Remastered (default rotation) ─────────────
+  { title: 'Yemani Ne Cheli', film: 'Mantri Gari Viyyankudu', year: 1983, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'TdGVucs851E' },
+  { title: 'Banthi Chamanthi', film: 'Abhilasha', year: 1983, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'mr_1PVIz-G0' },
+  { title: 'Urakalai Godavari', film: 'Abhilasha', year: 1983, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'JJ4qM3RsVrc' },
+  { title: 'Malli Malli Idi Rani Roju', film: 'Rakshasudu', year: 1986, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: '6VG6tP4AD_8' },
+  { title: 'Acha Acha', film: 'Rakshasudu', year: 1986, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'DL9cypVnVTI' },
+  { title: 'Kirathakudu Melody', film: 'Kirathakudu', year: 1986, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'cZiZdygx6vs' },
+  { title: 'Theeganai Mallelu', film: 'Aaradhana', year: 1987, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'NuPp1_Kb1gY' },
+  { title: 'Kashmiru Loyalo', film: 'Pasivadi Pranam', year: 1987, music: 'Chakravarthy', era: '80s', set: 'remastered', id: 'I4NW40QA2xM' },
+  { title: 'Andham Sharanam', film: 'Pasivadi Pranam', year: 1987, music: 'Chakravarthy', era: '80s', set: 'remastered', id: 'sRk4AloG3Io' },
+  { title: 'Tarali Raada Tane Vasantam', film: 'Rudraveena', year: 1988, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: '7ISFjys2_ks' },
+  { title: 'Nammaku Nammaku', film: 'Rudraveena', year: 1988, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'DcC_UWUbs-k' },
+  { title: 'Karigipoyanu', film: 'Marana Mrudangam', year: 1988, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'b5uEfBb6gy4' },
+  { title: 'Kottandi Thittandi', film: 'Marana Mrudangam', year: 1988, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: 'CWtIIztVRas' },
+  { title: 'Guvva Gorinkatho', film: 'Khaidi No. 786', year: 1988, music: 'Raj–Koti', era: '80s', set: 'remastered', id: 'ogZafbaqxdE' },
+  { title: '1234 Dance Dance', film: 'State Rowdy', year: 1989, music: 'Bappi Lahiri', era: '80s', set: 'remastered', id: 'F1L7VaQ9IoE' },
+  { title: 'Chukkala Pallakilo', film: 'State Rowdy', year: 1989, music: 'Bappi Lahiri', era: '80s', set: 'remastered', id: 'sqXu2BS_gDc' },
+  { title: 'Kalalo Pettani Muddulu Pettu', film: 'Attaku Yamudu Ammayiki Mogudu', year: 1989, music: 'Chakravarthy', era: '80s', set: 'remastered', id: 'x2dI1a_HZKQ' },
+  { title: 'Jivvumani Kondagali', film: 'Lankeswarudu', year: 1989, music: 'Raj–Koti', era: '80s', set: 'remastered', id: 'w_td9FwoKWs' },
+  { title: 'Andhamivvu Aadivaramu', film: 'Rudranetra', year: 1989, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: '8DCHiKIOi8w' },
+  { title: 'Khajuraho Lo', film: 'Rudranetra', year: 1989, music: 'Ilaiyaraaja', era: '80s', set: 'remastered', id: '0cqmkHVMkKY' },
+  { title: 'Yamaho Nee Yama Yama', film: 'Jagadeka Veerudu Athiloka Sundari', year: 1990, music: 'Ilaiyaraaja', era: '90s', set: 'remastered', id: 'mSqJxl7k_Bc' },
+  { title: 'Andalalo Aho Mahodayam', film: 'Jagadeka Veerudu Athiloka Sundari', year: 1990, music: 'Ilaiyaraaja', era: '90s', set: 'remastered', id: 'MEHCWUSlPFc' },
+  { title: 'Subhalekha Rasukunna', film: 'Kondaveeti Donga', year: 1990, music: 'Ilaiyaraaja', era: '90s', set: 'remastered', id: 'r07V0NbOym4' },
+  { title: 'Kolo Kolamma Galla', film: 'Kondaveeti Donga', year: 1990, music: 'Ilaiyaraaja', era: '90s', set: 'remastered', id: 'O_UlVm8-9Vg' },
+  { title: 'Allatappa Gongorammo', film: 'Kodama Simham', year: 1990, music: 'Raj–Koti', era: '90s', set: 'remastered', id: 'WeJY9SN79Qg' },
+  { title: 'Gagana Kirana', film: 'Raja Vikramarka', year: 1990, music: 'Raj–Koti', era: '90s', set: 'remastered', id: 'LGwBpfW78lY' },
+  { title: 'Zindabad Jil Jil', film: 'Stuartpuram Police Station', year: 1991, music: 'Ilaiyaraaja', era: '90s', set: 'remastered', id: '2G3zuvhoiKc' },
+  { title: 'Chamanthi Puvva Puvva', film: 'Mugguru Monagallu', year: 1994, music: 'Vidyasagar', era: '90s', set: 'remastered', id: 'F86z99lJoJY' },
+  { title: 'Kottu Kottu Kobbarikaya', film: 'Mugguru Monagallu', year: 1994, music: 'Vidyasagar', era: '90s', set: 'remastered', id: 'f9UeJiCU0zM' },
+  { title: 'Rajasekhara', film: 'Mugguru Monagallu', year: 1994, music: 'Vidyasagar', era: '90s', set: 'remastered', id: 'NxAnQuOXNtw' },
   // ───────────── The 80s ─────────────
   { title: 'Sandhya Poddula Kada', film: 'Abhilasha', year: 1983, music: 'Ilaiyaraaja', era: '80s', id: 'sUGwqczuuXo', alt: '8JVAbJOS3Xw' },
   { title: 'Navvindi Malle Chendu', film: 'Abhilasha', year: 1983, music: 'Ilaiyaraaja', era: '80s', id: '82hUDmPYazk', alt: 't61TTeuDzEQ' },

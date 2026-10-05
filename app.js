@@ -12,7 +12,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const state = {
-    era: 'all',
+    era: 'remastered', // 'remastered' | 'all' | '80s' | '90s' | '00s'
     shuffle: true,
     mode: 'audio', // 'audio' | 'video'
     queue: [],
@@ -56,6 +56,9 @@
   const clamp = (n, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
   const thumb = (id, size = 'mqdefault') => `url('https://i.ytimg.com/vi/${id}/${size}.jpg')`;
   const current = () => state.queue[state.pos];
+  const isRemastered = song => song.set === 'remastered';
+  // Does a song belong to a tuning (the chips under the player)?
+  const inTuning = (song, key) => key === 'all' || (key === 'remastered' ? isRemastered(song) : song.era === key);
 
   function shuffled(list) {
     const a = list.slice();
@@ -68,7 +71,7 @@
 
   // Rebuilds the queue for the current era/shuffle; `keep` stays as the current song if it fits.
   function buildQueue(keep) {
-    const pool = SONGS.filter(s => state.era === 'all' || s.era === state.era);
+    const pool = SONGS.filter(s => inTuning(s, state.era));
     if (state.shuffle) {
       const rest = shuffled(pool.filter(s => s !== keep));
       state.queue = keep && pool.includes(keep) ? [keep, ...rest] : rest;
@@ -82,8 +85,12 @@
   // ───────────── Rendering ─────────────
   function renderJukebox() {
     els.list.innerHTML = '';
-    for (const era of ERAS) {
-      const songs = SONGS.filter(s => s.era === era.key);
+    const groups = [
+      { title: 'Remastered', note: 'Clean audio, no ads · on the radio by default', songs: SONGS.filter(isRemastered) },
+      ...ERAS.map(era => ({ ...era, songs: SONGS.filter(s => s.era === era.key && !isRemastered(s)) })),
+    ];
+    for (const era of groups) {
+      const songs = era.songs;
       const block = document.createElement('div');
       block.className = 'era-block reveal';
       block.innerHTML = `<div class="era-head"><h3>${era.title}</h3><span>${era.note} · ${songs.length} songs</span></div>`;
@@ -115,7 +122,7 @@
   // Four song stills per era, pinned up like lobby cards
   function renderEraStacks() {
     for (const stack of $$('[data-stack]')) {
-      const songs = SONGS.filter(s => s.era === stack.dataset.stack);
+      const songs = SONGS.filter(s => s.era === stack.dataset.stack && !isRemastered(s)); // film stills, not audio artwork
       const step = Math.max(1, Math.floor(songs.length / 4));
       for (let i = 0; i < 4 && i * step < songs.length; i++) {
         const still = document.createElement('span');
@@ -238,7 +245,7 @@
   }
 
   function playSong(song) {
-    if (state.era !== 'all' && song.era !== state.era) setEra('all', true);
+    if (!inTuning(song, state.era)) setEra('all', true);
     buildQueue(song);
     if (state.ready && !state.started) raiseCurtain();
     load(state.ready);
@@ -251,7 +258,7 @@
     $$('.chip.era').forEach(b => b.classList.toggle('is-on', b.dataset.era === era));
     if (silent) return;
     const keep = current();
-    buildQueue(keep && (era === 'all' || keep.era === era) ? keep : null);
+    buildQueue(keep && inTuning(keep, era) ? keep : null);
     // only interrupt the current song if it doesn't belong to the chosen era
     if (current() !== keep) load(state.started);
   }
